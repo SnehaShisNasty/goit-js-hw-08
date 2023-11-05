@@ -1,38 +1,36 @@
-var throttle = require('lodash.throttle');
+import throttle from 'lodash.throttle';
 
 const form = document.querySelector('.feedback-form');
-form.addEventListener('input', handleClick);
-const formFeedback = {};
+const email = form.elements.email;
+const message = form.elements.message;
+let formValue = {};
 
-function handleClick(event) {
-  if (event.target.name === 'email') {
-    formFeedback.email = event.target.value;
-  }
-  if (event.target.name === 'message') {
-    formFeedback.message = event.target.value;
-  }
-  const f = throttle(() => {
-    const data = JSON.stringify(formFeedback);
-    localStorage.setItem('feedback-form-state', data);
-  }, 500);
+let data = JSON.parse(localStorage.getItem('feedback-form-state'));
+try {
+  email.value = data.email || '';
+  message.value = data.message || '';
+} catch (error) {}
 
-  f();
+function saveForm(event) {
+  if (data) {
+    formValue = data;
+  }
+  formValue[event.target.name] = event.target.value;
+  localStorage.setItem('feedback-form-state', JSON.stringify(formValue));
 }
-function onLoad() {
-  const onLoadObj = JSON.parse(localStorage.getItem('feedback-form-state'));
-  form.elements.email.value === null || undefined
-    ? (form.elements.email.value = onLoadObj.email)
-    : (form.elements.email.value = ' ');
-  form.elements.email.value === null
-    ? (form.elements.email.value = onLoadObj.message)
-    : (form.elements.email.value = ' ');
-}
-onLoad();
-form.addEventListener('submit', submitForm);
+
+form.addEventListener('input', throttle(saveForm, 500));
+
 function submitForm(event) {
   event.preventDefault();
-  console.log(formFeedback);
-  const formFeedback = {};
-  localStorage.clear();
-  form.reset();
+  if (email.value.trim() === '' || message.value === '') {
+    alert('Заповніть всі поля!');
+  } else {
+    console.log(formValue);
+    localStorage.clear();
+    event.target.reset();
+    formValue = {};
+    data = {};
+  }
 }
+form.addEventListener('submit', submitForm);
