@@ -32,6 +32,7 @@ form.addEventListener('submit', submitForm);
 function submitForm(event) {
   event.preventDefault();
   console.log(formFeedback);
+  const formFeedback = {};
   localStorage.clear();
   form.reset();
 }
