@@ -20,8 +20,12 @@ function handleClick(event) {
 }
 function onLoad() {
   const onLoadObj = JSON.parse(localStorage.getItem('feedback-form-state'));
-  form.elements.email.value = onLoadObj.email;
-  form.elements.message.value = onLoadObj.message;
+  form.elements.email.value === null || undefined
+    ? (form.elements.email.value = onLoadObj.email)
+    : (form.elements.email.value = ' ');
+  form.elements.email.value === null
+    ? (form.elements.email.value = onLoadObj.message)
+    : (form.elements.email.value = ' ');
 }
 onLoad();
 form.addEventListener('submit', submitForm);

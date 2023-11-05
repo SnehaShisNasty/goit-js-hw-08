@@ -12,5 +12,5 @@ const callback = throttle(() => {
 player.on('timeupdate', callback);
 
 player
-  .setCurrentTime(JSON.parse(localStorage.getItem('timeStop')))
+  .setCurrentTime(JSON.parse(localStorage.getItem('timeStop')) || 0)
   .then(function (seconds) {});
